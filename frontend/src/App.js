@@ -1,12 +1,13 @@
 import React from 'react';
 
+import './global.css'
+
+import Logon from './pages/Logon/index';
+
 function App() {
   return (
-    <div className="App">
-      <h1>Hello OmniStack</h1>
-        
-    </div>
-  );
+    <Logon />
+  ); 
 }
 
 export default App;
