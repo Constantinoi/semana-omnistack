@@ -1,18 +1,21 @@
 import React from 'react';
 import { Feather } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute, useTheme  } from '@react-navigation/native';
 import { View,Text, Image, TouchableOpacity, Linking } from 'react-native';
 import * as MailCompose from 'expo-mail-composer';
 
 import logoImg from '../../assets/logo.png';
 
 import styles from './styles';
-
+import Incidents from '../Incidents';
 
 export default function Detail(){
 
     const navigation = useNavigation();
-    const message = 'Ola Apad, estou entrando em contato pois gostaria da cadelia';
+    const  route = useRoute();
+    const incident = route.params.incident;
+
+    const message = `Ola ${incident.name}, estou entrando em contato pois gostaria de ajudar no caso ${incident.titulo} com o valor de ${Intl.NumberFormat('pt-BR', {style: 'currency', currency:'BRL'}).format(incident.value)}`;
 
     function navigateBack(){
         navigation.goBack();
@@ -20,13 +23,13 @@ export default function Detail(){
 
     function sendMail(){
          MailCompose.composeAsync({
-             subject: 'Heroi do caso ',
-             recipients: ['pescaalma@gmail.com'],
+             subject: `Heroi do caso ${incident.titulo}`,
+             recipients: [incident.email],
              body:message
          })
     }
     function sendWhatapp(){
-        Linking.openURL(`whatsapp://send?phone=55959999999&text=${message}`)
+        Linking.openURL(`whatsapp://send?phone=${incident.whatsapp}&text=${message}`)
     }
 
     return(
@@ -39,13 +42,20 @@ export default function Detail(){
             </View>
                 <View style={styles.incidents}>
                     <Text style={[styles.incidentsProperty, { marginTop: 0}]}>ONG:</Text>
-                    <Text style={styles.incidentsValue}>APAD</Text>
+                    <Text style={styles.incidentsValue}>{incident.name} de {incident.city}/{incident.uf}</Text>
 
                     <Text style={styles.incidentsProperty}>Caso:</Text>
-                    <Text style={styles.incidentsValue}>Catioro Loko</Text>
+                    <Text style={styles.incidentsValue}>{incident.titulo}</Text>
+
+                    <Text style={styles.incidentsProperty}>Detalhes:</Text>
+                    <Text style={styles.incidentsValue}>{incident.description}</Text>
 
                     <Text style={styles.incidentsProperty}>VALOR:</Text>
-                    <Text style={styles.incidentsValue}>R$ 100</Text>
+                    <Text style={styles.incidentsValue}>
+                            {Intl.NumberFormat('pt-BR', 
+                            {style: 'currency', 
+                            currency:'BRL'
+                            }).format(incident.value)}</Text>
                 </View>
                     <View style={styles.contactBox}>
                         <Text style={styles.heroTitle}>Salve o dia!</Text>
